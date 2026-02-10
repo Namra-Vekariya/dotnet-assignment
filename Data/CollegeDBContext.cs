@@ -1,3 +1,4 @@
+using CollegeApp.Data.Config;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollegeApp.Data{
@@ -6,10 +7,9 @@ namespace CollegeApp.Data{
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           modelBuilder.Entity<Student>().HasData( new List<Student>(){
-            new Student{Id=1,StudentName="AA",Email="AA@gmail.com"},
-            new Student{Id=2,StudentName="bb",Email="bb@gmail.com"}
-           } );
+           //table 1
+           modelBuilder.ApplyConfiguration(new StudentConfig());
+           //table 2
         }
     }
 }

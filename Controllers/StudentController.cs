@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CollegeApp.Models;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
+using CollegeApp.Data;
 namespace CollegeApp.Controllers{
     [Route("api/[controller]")]
     [ApiController]
@@ -9,9 +10,13 @@ namespace CollegeApp.Controllers{
     public class StudentController : ControllerBase
     {
         private readonly ILogger<StudentController> _logger;
-        public StudentController(ILogger<StudentController> logger)
+        private readonly CollegeDBContext _dbContext;
+
+        public StudentController(ILogger<StudentController> logger ,CollegeDBContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
+
         }
         [HttpGet]
         [Route("All")]
@@ -29,12 +34,14 @@ namespace CollegeApp.Controllers{
             //     students.Add(obj);
             _logger.LogInformation("Get student method started");
             // }
-            var students = CollegeRepository.Students.Select(item => new StudentDTO(){
-                Id = item.Id,
-                StudentName = item.StudentName,
-                Address = item.Address,
-                Email = item.Email,
-            });
+            var students = _dbContext.Students.ToList();
+            // var students = _dbContext.Students.Select(s => new StudentDTO(){
+            //     Id = s.Id,
+            //     StudentName = s.StudentName,
+            //     Address = s.Address,
+            //     Email = s.Email,
+                // DOB = s.DOB.ToShortDateString(),
+            // }).ToList();
             return Ok(students);
         }
 
@@ -48,20 +55,28 @@ namespace CollegeApp.Controllers{
                 _logger.LogWarning("Bad request");
                 return BadRequest("id should be positive");
             }
-            var student = CollegeRepository.Students.FirstOrDefault(n => n.Id == id);
+            var student = _dbContext.Students.FirstOrDefault(n => n.Id == id);
             if (student == null)
             {
                 _logger.LogError("Student not found with id: {id}", id);
                 return NotFound();
             }
+            var studentDTO = new StudentDTO {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Address = student.Address,
+                Email = student.Email,
+                DOB = student.DOB
+            };
             return Ok(student);  // Return a single student
+            // return Ok(studentDTO);
         }
 
         [HttpGet("{name:alpha}")]
         public ActionResult<Student> GetStudentByname(string name)
         {
             // return 
-            var student  = CollegeRepository.Students.FirstOrDefault(n => n.StudentName == name);
+            var student  = _dbContext.Students.FirstOrDefault(n => n.StudentName == name);
             if (student == null)
             {
                 return NotFound();
@@ -91,15 +106,18 @@ namespace CollegeApp.Controllers{
                 // }
 
                 // increment by one
-                int newId = CollegeRepository.Students.Count > 0 ? CollegeRepository.Students.Max(s => s.Id) + 1 : 1;
+                // int newId = _dbContext.Students.Count > 0 ? _dbContext.Students.Max(s => s.Id) + 1 : 1;
                 var student = new Student
                 {
-                    Id = newId,
+                    // Id = newId,
                     StudentName = model.StudentName,
                     Email = model.Email,
-                    Address = model.Address
+                    Address = model.Address,
+                    DOB = model.DOB
                 };
-                CollegeRepository.Students.Add(student);
+                _dbContext.Students.Add(student);
+                // after adding we need to save changes
+                _dbContext.SaveChanges();
                 model.Id = student.Id; 
                 return CreatedAtRoute("GetStudentById", new { id = model.Id }, model); // Return a 201 Created response with the location of the new student
                 // return Ok(model); 
@@ -115,13 +133,15 @@ namespace CollegeApp.Controllers{
             if(model == null || model.Id <= 0){
                 return BadRequest("Student data is null");
             }
-            var existingStudent = CollegeRepository.Students.FirstOrDefault(s => s.Id == model.Id);
+            var existingStudent = _dbContext.Students.FirstOrDefault(s => s.Id == model.Id);
             if(existingStudent == null){
                 return NotFound("Student not found");
             }
             existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
+            existingStudent.DOB = Convert.ToDateTime(model.DOB);
+            _dbContext.SaveChanges();
             return Ok(model); // Return a success response with the updated student data
         }
 
@@ -136,7 +156,7 @@ namespace CollegeApp.Controllers{
             if(patchDocument == null || id <= 0){
                 return BadRequest("Student data is null");
             }
-            var existingStudent = CollegeRepository.Students.FirstOrDefault(s => s.Id == id);
+            var existingStudent = _dbContext.Students.FirstOrDefault(s => s.Id == id);
             if(existingStudent == null){
                 return NotFound("Student not found");
             }
@@ -156,18 +176,19 @@ namespace CollegeApp.Controllers{
             existingStudent.StudentName = studentDTO.StudentName;
             existingStudent.Email = studentDTO.Email;
             existingStudent.Address = studentDTO.Address;
+            _dbContext.SaveChanges();
             return NoContent(); // Return a success response with the updated student data
         }
         // Delete a student by ID
         [HttpDelete("{id:int}")]
         public ActionResult<bool> deleteStudent(int id)
         {
-            var student = CollegeRepository.Students.FirstOrDefault(n => n.Id == id);
+            var student = _dbContext.Students.FirstOrDefault(n => n.Id == id);
             if (student == null)
             {
                 return NotFound();  // Return a 404 if the student is not found
             }
-            CollegeRepository.Students.Remove(student);  // Remove the single student
+            _dbContext.Students.Remove(student);  // Remove the single student
             return Ok(true);  // Return a success response
         }
 
@@ -177,12 +198,13 @@ namespace CollegeApp.Controllers{
             if(id <= 0){
                 return BadRequest("Invalid student ID");
             }
-            var student = CollegeRepository.Students.FirstOrDefault(n => n.Id == id);
+            var student = _dbContext.Students.FirstOrDefault(n => n.Id == id);
             if (student == null)
             {
                 return NotFound();  // Return a 404 if the student is not found
             }
-            CollegeRepository.Students.Remove(student);  // Remove the single student
+            _dbContext.Students.Remove(student);  // Remove the single student
+            _dbContext.SaveChanges();
             return Ok(true);  // Return a success response
     }
 }}
