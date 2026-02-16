@@ -7,10 +7,10 @@ namespace CollegeApp.Data.Config{
             builder.ToTable("Students");
             builder.HasKey(x=>x.Id); //remove [key] in model 
             builder.Property(x=>x.Id).UseIdentityColumn();
-                builder.Property(n=> n.StudentName).IsRequired();
+                builder.Property(n=> n.StudentName);
                 builder.Property(n=>n.StudentName).HasMaxLength(250);
-                builder.Property(n=>n.Address).IsRequired(false).HasMaxLength(500);
-                builder.Property(n=>n.Email).IsRequired().HasMaxLength(250);
+                builder.Property(n=>n.Address).HasMaxLength(500);
+                builder.Property(n=>n.Email).HasMaxLength(250);
                 builder.HasData( new List<Student>(){
 
                     new Student{Id=1,StudentName="AA",Email="AA@gmail.com"},
