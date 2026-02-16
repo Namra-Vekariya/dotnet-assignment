@@ -1,16 +1,16 @@
 using CollegeApp.Data;
+using CollegeApp.Data.Repository;
 using CollegeApp.MyLogging;
 using Microsoft.EntityFrameworkCore;
+using Routing.Configurations;
+using Routing.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // clear all four default Logger 
 builder.Logging.ClearProviders();
-
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
-
-
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 // Add services to the container.
@@ -25,7 +25,12 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IMyLogger,LogToFile>();
+
+builder.Services.AddAutoMapper((Don)=>{},typeof(AutoMapperconfig).Assembly);
+builder.Services.AddTransient<IMyLogger,LogToServerMemory>();
+builder.Services.AddTransient<IStudentRepository,StudentRepository>();
+builder.Services.AddScoped(typeof(ICollegeRepository<>), typeof(CollegeRepository<>));
+// builder.Services.AddScoped<IMyLogger,LogToFile>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

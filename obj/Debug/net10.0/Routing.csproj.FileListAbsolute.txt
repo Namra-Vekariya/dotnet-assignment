@@ -127,3 +127,8 @@ D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Work
 D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 D:\dotnet-learn\routing\Routing\obj\Debug\net10.0\Routing.sourcelink.json
+D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\AutoMapper.dll
+D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+D:\dotnet-learn\routing\Routing\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\dotnet-learn\\routing\\Routing\\Routing.csproj": {}
+    "D:\\dotnet-learn\\routing\\Routing\\Routing.csproj": {}
   },
   "projects": {
-    "d:\\dotnet-learn\\routing\\Routing\\Routing.csproj": {
+    "D:\\dotnet-learn\\routing\\Routing\\Routing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\dotnet-learn\\routing\\Routing\\Routing.csproj",
+        "projectUniqueName": "D:\\dotnet-learn\\routing\\Routing\\Routing.csproj",
         "projectName": "Routing",
-        "projectPath": "d:\\dotnet-learn\\routing\\Routing\\Routing.csproj",
+        "projectPath": "D:\\dotnet-learn\\routing\\Routing\\Routing.csproj",
         "packagesPath": "C:\\Users\\pct119\\.nuget\\packages\\",
-        "outputPath": "d:\\dotnet-learn\\routing\\Routing\\obj\\",
+        "outputPath": "D:\\dotnet-learn\\routing\\Routing\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pct119\\AppData\\Roaming\\NuGet\\NuGet.Config"
