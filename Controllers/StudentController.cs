@@ -16,8 +16,9 @@ namespace CollegeApp.Controllers{
         private readonly ILogger<StudentController> _logger;
         // private readonly CollegeDBContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ICollegeRepository<Student> _studentRepository;
-        public StudentController(ILogger<StudentController> logger ,CollegeDBContext dbContext,IMapper mapper,ICollegeRepository<Student> studentRepository)
+        // private readonly ICollegeRepository<Student> _studentRepository;
+        private readonly IStudentRepository _studentRepository;
+        public StudentController(ILogger<StudentController> logger ,CollegeDBContext dbContext,IMapper mapper,IStudentRepository studentRepository)
         {
             _logger = logger;
             // _dbContext = dbContext;
@@ -63,7 +64,7 @@ namespace CollegeApp.Controllers{
                 _logger.LogWarning("Bad request");
                 return BadRequest("id should be positive");
             }
-            var student = await _studentRepository.GetByIdAsync(student => student.Id == id);
+            var student = await _studentRepository.GetAsync(student => student.Id == id);
             if (student == null)
             {
                 _logger.LogError("Student not found with id: {id}", id);
@@ -85,7 +86,7 @@ namespace CollegeApp.Controllers{
         public async Task<ActionResult<Student>> GetStudentByname(string name)
         {
             // return 
-            var student  =await _studentRepository.GetByNameAsync(student => student.StudentName.Contains(name.ToLower()));
+            var student  =await _studentRepository.GetAsync(student => student.StudentName.Contains(name.ToLower()));
             if (student == null)
             {
                 return NotFound();
@@ -146,7 +147,7 @@ namespace CollegeApp.Controllers{
             if(dto == null || dto.Id <= 0){
                 return BadRequest("Student data is null");
             }
-            var existingStudent =await _studentRepository.GetByIdAsync(student => student.Id == dto.Id,true);
+            var existingStudent =await _studentRepository.GetAsync(student => student.Id == dto.Id,true);
             if(existingStudent == null){
                 return NotFound("Student not found");
             }
@@ -179,7 +180,7 @@ namespace CollegeApp.Controllers{
                 return BadRequest("Student data is null");
             }
 
-            var existingStudent =await _studentRepository.GetByIdAsync(student =>student.Id == id,true);
+            var existingStudent =await _studentRepository.GetAsync(student =>student.Id == id,true);
 
             if(existingStudent == null){
                 return NotFound("Student not found");
@@ -210,7 +211,7 @@ namespace CollegeApp.Controllers{
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<bool>> deleteStudent(int id)
         {
-            var student =await  _studentRepository.GetByIdAsync(student => student.Id == id);
+            var student =await  _studentRepository.GetAsync(student => student.Id == id);
             if (student == null)
             {
                 return NotFound();  // Return a 404 if the student is not found
@@ -227,7 +228,7 @@ namespace CollegeApp.Controllers{
             if(id <= 0){
                 return BadRequest("Invalid student ID");
             }
-            var student = await _studentRepository.GetByIdAsync(student=> student.Id ==id );
+            var student = await _studentRepository.GetAsync(student=> student.Id ==id );
             if (student == null)
             {
                 return NotFound();  // Return a 404 if the student is not found

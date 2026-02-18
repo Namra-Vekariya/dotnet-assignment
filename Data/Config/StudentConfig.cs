@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Routing.Data;
 
 namespace CollegeApp.Data.Config{
     public class StudentConfig : IEntityTypeConfiguration<Student>{
@@ -16,6 +17,11 @@ namespace CollegeApp.Data.Config{
                     new Student{Id=1,StudentName="AA",Email="AA@gmail.com"},
                     new Student{Id=2,StudentName="bb",Email="bb@gmail.com"}
                 });
+
+                builder.HasOne(n=>n.Department)
+                    .WithMany(n=>n.Students)
+                    .HasForeignKey(n=>n.DepartmentId)
+                    .HasConstraintName("FK_Students_Department");
         }
     }
 }

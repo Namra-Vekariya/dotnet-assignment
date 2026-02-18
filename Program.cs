@@ -2,6 +2,7 @@ using CollegeApp.Data;
 using CollegeApp.Data.Repository;
 using CollegeApp.MyLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Routing.Configurations;
 using Routing.Data.Repository;
 
@@ -30,9 +31,15 @@ builder.Services.AddAutoMapper((Don)=>{},typeof(AutoMapperconfig).Assembly);
 builder.Services.AddTransient<IMyLogger,LogToServerMemory>();
 builder.Services.AddTransient<IStudentRepository,StudentRepository>();
 builder.Services.AddScoped(typeof(ICollegeRepository<>), typeof(CollegeRepository<>));
+
+// cors policy
+builder.Services.AddCors(options =>options.AddPolicy("myCors",policy=>{
+    // policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+    }));
+                                                                
 // builder.Services.AddScoped<IMyLogger,LogToFile>();
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -40,6 +47,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("myCors");
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 

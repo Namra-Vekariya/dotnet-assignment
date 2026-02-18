@@ -1,12 +1,9 @@
 
 namespace CollegeApp.Data.Repository;
 
-public interface IStudentRepository
+public interface IStudentRepository : ICollegeRepository<Student>
+// this is how we inherit the common repo 
 {
-    Task<List<Student>> GetAllAsync();
-    Task<Student?> GetByIdAsync(int id,bool useNoTracking = false);
-    Task<Student?> GetByNameAsync(string name);
-    Task<Student> CreateAsync(Student student);
-    Task<Student> UpdateAsync(Student student);
-    Task<Student> DeleteAsync(Student student);
+//     we also add additional tasks or functions 
+// Task<List<Student>> GetStudentsByFeeStatusAsync(int feeStatus);
 }
