@@ -17,7 +17,7 @@ namespace CollegeApp.Data.Repository{
         }
     public async Task<T> DeleteAsync(T dbRecord)
         {
-        _dbSet.Remove(dbRecord);
+            _dbSet.Remove(dbRecord);
             await _dbContext.SaveChangesAsync();
             return dbRecord;
         }
@@ -26,12 +26,15 @@ namespace CollegeApp.Data.Repository{
         return await _dbSet.ToListAsync();
     }
 
-    public async Task<List<T?>> GetByIdAsync(Expression<Func<T, bool>> filter, bool useNoTracking = false)
+    public async Task<T?> GetByIdAsync(Expression<Func<T, bool>> filter, bool useNoTracking = false)
     {
-         if (useNoTracking)
-                return await _dbSet.AsNoTracking().Where(filter).ToListAsync();
-            else
-                return await _dbSet.Where(filter).ToListAsync();
+         if (useNoTracking){
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(filter);
+                return entity ?? throw new Exception("Record not found");
+         }else {
+                var entity = await _dbSet.FirstOrDefaultAsync(filter);
+                return entity ?? throw new Exception("Record not found");
+            }
     }
 
     // Get student by Name  
@@ -42,7 +45,7 @@ namespace CollegeApp.Data.Repository{
      public async Task<T> UpdateAsync(T dbRecord)
     {
 
-        _dbContext.Update(dbRecord);
+        _dbSet.Update(dbRecord);
         await _dbContext.SaveChangesAsync();
         
         return dbRecord;

@@ -17,9 +17,14 @@ public class StudentRepository : IStudentRepository{
 
     public async Task<Student?> GetByIdAsync(int id, bool useNoTracking =false)
     {
-        if(useNoTracking)
-            return await _dbContext.Students.AsNoTracking().Where(student => student.Id == id).FirstOrDefaultAsync(s => s.Id == id);
-        return await _dbContext.Students.Where(student=>student.Id == id).FirstOrDefaultAsync(s => s.Id == id);
+        Student? student;
+
+            if (useNoTracking)
+                student = await _dbContext.Students.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+            else
+                student = await _dbContext.Students.FirstOrDefaultAsync(s => s.Id == id);
+
+            return student ?? throw new Exception("Student not found"); 
     }
 
     // Get student by Name  
@@ -32,31 +37,31 @@ public class StudentRepository : IStudentRepository{
     }
 
     // Create new student
-    public async Task<int> CreateAsync(Student student)
+    public async Task<Student> CreateAsync(Student student)
     {
         await _dbContext.Students.AddAsync(student);
         await _dbContext.SaveChangesAsync();
-        return student.Id;
+        return student;
     }
 
     // Update existing student
-    public async Task<int> UpdateAsync(Student student)
+    public async Task<Student> UpdateAsync(Student student)
     {
 
-        _dbContext.Update(student);
+        _dbContext.Students.Update(student);
         await _dbContext.SaveChangesAsync();
         
-        return student.Id;
+        return student;
     }
 
     // Delete student by Id
-    public async Task<bool> DeleteAsync(Student student)
+    public async Task<Student> DeleteAsync(Student student)
     {
       
 
         _dbContext.Students.Remove(student);
         await _dbContext.SaveChangesAsync();
-        return true;
+        return student;
     }
     
 }
